@@ -1,5 +1,7 @@
 import json
 import pandas as pd
+import ta  # 新增导入
+
 
 def load_kline_data(file_path):
     """
@@ -9,9 +11,10 @@ def load_kline_data(file_path):
         data = json.load(f)
     return data
 
+
 def process_kline_data(kline_data):
     """
-    处理KLine数据，提取价格数据和交易量数据。
+    处理KLine数据，提取价格数据和交易量数据，并计算MACD指标。
     """
     processed_data = []
     for entry in kline_data:
@@ -43,13 +46,21 @@ def process_kline_data(kline_data):
         processed_data.append(processed_entry)
     
     df = pd.DataFrame(processed_data)
+
+    # 计算MACD指标
+    df['MACD'] = ta.trend.macd(close=df['close_price'])
+    df['MACD_Signal'] = ta.trend.macd_signal(close=df['close_price'])
+    df['MACD_Hist'] = ta.trend.macd_diff(close=df['close_price'])
+
     return df
+
 
 def save_to_csv(df, output_path):
     """
     将处理后的数据保存为CSV文件。
     """
     df.to_csv(output_path, index=False)
+
 
 if __name__ == "__main__":
     input_file = 'path_to_your_kline_data.json'  # 替换为实际的KLine数据文件路径

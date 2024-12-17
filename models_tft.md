@@ -20,6 +20,7 @@ data_config = {
         "监管新闻": 10,
         "挖矿难度": 1,
         "汇率": 4,
+        "MACD": 3,  # 新增MACD相关特征
     },
     "unknown_features": {
         "open_price": 1,
