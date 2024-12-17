@@ -21,6 +21,8 @@ data_config = {
         "挖矿难度": 1,
         "汇率": 4,
         "MACD": 3,  # 新增MACD相关特征
+        "MA_Short": 1,  # 新增短期移动平均线
+        "MA_Medium": 1,  # 新增中期移动平均线
     },
     "unknown_features": {
         "open_price": 1,

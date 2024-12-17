@@ -14,7 +14,7 @@ def load_kline_data(file_path):
 
 def process_kline_data(kline_data):
     """
-    处理KLine数据，提取价格数据和交易量数据，并计算MACD指标。
+    处理KLine数据，提取价格数据和交易量数据，并计算技术指标（MACD、移动平均线）。
     """
     processed_data = []
     for entry in kline_data:
@@ -51,6 +51,10 @@ def process_kline_data(kline_data):
     df['MACD'] = ta.trend.macd(close=df['close_price'])
     df['MACD_Signal'] = ta.trend.macd_signal(close=df['close_price'])
     df['MACD_Hist'] = ta.trend.macd_diff(close=df['close_price'])
+
+    # 计算移动平均线指标
+    df['MA_Short'] = ta.trend.sma_indicator(close=df['close_price'], window=10)  # 短期移动平均线（10期）
+    df['MA_Medium'] = ta.trend.sma_indicator(close=df['close_price'], window=50)  # 中期移动平均线（50期）
 
     return df
 
