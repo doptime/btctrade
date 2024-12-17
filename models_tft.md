@@ -22,13 +22,14 @@ data_config = {
         "汇率": 4,
     },
     "unknown_features": {
-        "价格数据": 4,
-        "交易量数据": 3,
-        "技术分析指标": 15,
-        "市场情绪数据": 6,
-        "链上数据": 12,
-        "宏观与监管数据": 15,
-        "市场深度数据": 6,
+        "open_price": 1,
+        "high_price": 1,
+        "low_price": 1,
+        "close_price": 1,
+        "buy_volume": 1,
+        "sell_volume": 1,
+        "total_volume": 1,
+        # 其他特征逐步添加
     },
     "output_features": {
         "交易信号": 8,
@@ -40,12 +41,18 @@ data_config = {
 def preprocess_data(df):
     df = df.sort_values(['symbol', 'time']).reset_index(drop=True)
     df['time_idx'] = df.groupby('symbol')['time'].rank(method="dense").astype(int)
+    
+    # 编码信号
     label_encoder = LabelEncoder()
     df['买入卖出持有信号'] = label_encoder.fit_transform(df['买入卖出持有信号'])
+    
+    # 标准化
     scaler = StandardScaler()
     unknown_reals = list(data_config["unknown_features"].keys())
     known_reals = list(data_config["known_features"].keys())
+    # 确保CSV中包含这些列
     df[unknown_reals + known_reals] = scaler.fit_transform(df[unknown_reals + known_reals])
+    
     return df, label_encoder, scaler
 
 # 加载和预处理数据
@@ -336,9 +343,6 @@ trained_model = train_model(
     max_epochs=30,
     gpus=gpus
 )
-
-
-
 
 # 预测函数
 def make_predictions(model, dataloader):
